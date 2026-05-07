@@ -8,7 +8,7 @@ public class UCS extends Solver {
 
     @Override
     public SolverResult solve() {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         int totalIterations = 0;
 
         PriorityQueue<int[]> frontier = new PriorityQueue<>(
@@ -39,7 +39,7 @@ public class UCS extends Solver {
             if (isGoal(x, y, lastCp)) {
                 SolverResult result = reconstructResult(parentMap, currentState,
                         totalIterations, startTime);
-                result.executionTimeMs = System.currentTimeMillis() - startTime;
+                result.executionTimeMs = (System.nanoTime() - startTime) / 1_000_000.0;
                 return result;
             }
 
@@ -70,7 +70,7 @@ public class UCS extends Solver {
         SolverResult result = new SolverResult();
         result.solutionFound = false;
         result.totalIterations = totalIterations;
-        result.executionTimeMs = System.currentTimeMillis() - startTime;
+        result.executionTimeMs = (System.nanoTime() - startTime) / 1_000_000.0;
         return result;
     }
 }
