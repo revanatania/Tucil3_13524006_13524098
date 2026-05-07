@@ -94,7 +94,7 @@ public abstract class Solver {
         SolverResult result = new SolverResult();
         result.solutionFound = true;
         result.totalIterations = totalIterations;
-        result.executionTimeMs = System.currentTimeMillis() - startTime;
+        result.executionTimeMs = (System.nanoTime() - startTime) / 1_000_000.0;
 
         List<Character> moves = new ArrayList<>();
         List<int[]> steps = new ArrayList<>();

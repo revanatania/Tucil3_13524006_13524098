@@ -5,7 +5,7 @@ public class SolverResult {
     public List<Character> moves;     
     public int totalCost;             
     public int totalIterations;       
-    public long executionTimeMs;        
+    public double executionTimeMs;        
 
     public List<int[]> steps;
 

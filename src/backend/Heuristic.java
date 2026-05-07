@@ -1,3 +1,5 @@
+
+
 public class Heuristic {
 
     public enum Type {
