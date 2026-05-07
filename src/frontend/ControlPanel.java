@@ -7,7 +7,6 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.util.function.Consumer;
 
-
 public class ControlPanel extends ScrollPane {
 
     private TextField        fileField;
@@ -68,14 +67,18 @@ public class ControlPanel extends ScrollPane {
         algoCombo = new ComboBox<>();
         algoCombo.getItems().addAll(
             "A*  \u2014  A-Star",
-            "UCS  \u2014  Uniform Cost",
-            "GBFS  \u2014  Greedy Best-First"
+            "UCS  \u2014  Uniform Cost Search",
+            "GBFS  \u2014  Greedy Best First Search",
+            "BFS  \u2014  Breadth First Search"
         );
         algoCombo.setValue("A*  \u2014  A-Star");
         algoCombo.getStyleClass().add("ctrl-combo");
         algoCombo.setMaxWidth(Double.MAX_VALUE);
-        algoCombo.setOnAction(e ->
-            heurCombo.setDisable(algoCombo.getValue().startsWith("UCS")));
+        algoCombo.setOnAction(e -> {
+            String val = algoCombo.getValue();
+            boolean noHeur = val.startsWith("UCS") || val.startsWith("BFS");
+            heurCombo.setDisable(noHeur);
+        });
 
         box.getChildren().add(algoCombo);
         return box;
@@ -167,7 +170,6 @@ public class ControlPanel extends ScrollPane {
         }
     }
 
-
     public void setOnRun(Runnable r)                { onRun     = r; }
     public void setOnReset(Runnable r)              { onReset   = r; }
     public void setOnSave(Runnable r)               { onSave    = r; }
@@ -188,6 +190,7 @@ public class ControlPanel extends ScrollPane {
         String v = algoCombo.getValue();
         if (v.startsWith("UCS"))  return SolverRequest.Algorithm.UCS;
         if (v.startsWith("GBFS")) return SolverRequest.Algorithm.GBFS;
+        if (v.startsWith("BFS"))  return SolverRequest.Algorithm.BFS;
         return SolverRequest.Algorithm.ASTAR;
     }
 
@@ -197,8 +200,6 @@ public class ControlPanel extends ScrollPane {
         if (v.startsWith("H3")) return SolverRequest.Heuristic.H3_CHEBYSHEV;
         return SolverRequest.Heuristic.H1_MANHATTAN;
     }
-
-    
 
     private static VBox vbox(int s) { return new VBox(s); }
 

@@ -1,11 +1,10 @@
-
 import java.util.List;
 
 class BoardStateFrame {
     final int stepIndex;
     final int playerRow;
     final int playerCol;
-    final String moveDirection;   
+    final String moveDirection;
     final int costAtStep;
     final int lastCheckpoint;
     final List<int[]> slidePath;
@@ -14,19 +13,19 @@ class BoardStateFrame {
     BoardStateFrame(int stepIndex, int playerRow, int playerCol,
                     String moveDirection, int costAtStep, int lastCheckpoint,
                     List<int[]> slidePath, List<int[]> visitedCells) {
-        this.stepIndex     = stepIndex;
-        this.playerRow     = playerRow;
-        this.playerCol     = playerCol;
-        this.moveDirection = moveDirection;
-        this.costAtStep    = costAtStep;
+        this.stepIndex      = stepIndex;
+        this.playerRow      = playerRow;
+        this.playerCol      = playerCol;
+        this.moveDirection  = moveDirection;
+        this.costAtStep     = costAtStep;
         this.lastCheckpoint = lastCheckpoint;
-        this.slidePath     = slidePath;
-        this.visitedCells  = visitedCells;
+        this.slidePath      = slidePath;
+        this.visitedCells   = visitedCells;
     }
 }
 
 class SolverRequest {
-    enum Algorithm { UCS, GBFS, ASTAR }
+    enum Algorithm { UCS, GBFS, ASTAR, BFS }
     enum Heuristic { H1_MANHATTAN, H2_EUCLIDEAN, H3_CHEBYSHEV }
 
     final String boardFilePath;
@@ -41,10 +40,10 @@ class SolverRequest {
 }
 
 class SolverResultVM {
-    String status;          
+    String status;
     String algorithmName;
     String heuristicName;
-    String solutionPath;    
+    String solutionPath;
     int    totalCost;
     double executionTimeMs;
     int    iterationCount;

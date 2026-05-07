@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.util.*;
 
@@ -12,31 +11,35 @@ public class SolverService {
         }
         String validationError = map.validate();
         if (validationError != null) return error("Invalid map: " + validationError);
+
         Heuristic.Type hType = null;
         String hName = "—";
-        if (request.algorithm != SolverRequest.Algorithm.UCS) {
+        if (request.algorithm == SolverRequest.Algorithm.GBFS ||
+            request.algorithm == SolverRequest.Algorithm.ASTAR) {
             switch (request.heuristic) {
                 case H1_MANHATTAN -> { hType = Heuristic.Type.MANHATTAN; hName = "Manhattan"; }
                 case H2_EUCLIDEAN -> { hType = Heuristic.Type.EUCLIDEAN; hName = "Euclidean"; }
                 case H3_CHEBYSHEV -> { hType = Heuristic.Type.CHEBYSHEV; hName = "Chebyshev"; }
             }
         }
-   
+
         Solver solver = switch (request.algorithm) {
             case GBFS  -> new GBFS(map, hType);
             case ASTAR -> new AStar(map, hType);
+            case BFS   -> new BFS(map);
             default    -> new UCS(map);
         };
         String algoName = switch (request.algorithm) {
             case UCS   -> "UCS";
             case GBFS  -> "GBFS";
             case ASTAR -> "A*";
+            case BFS   -> "BFS";
         };
 
         SolverResult raw = solver.solve();
         SolverResultVM vm = new SolverResultVM();
-        vm.algorithmName  = algoName;
-        vm.heuristicName  = hName;
+        vm.algorithmName   = algoName;
+        vm.heuristicName   = hName;
         vm.executionTimeMs = raw.executionTimeMs;
         vm.iterationCount  = raw.totalIterations;
 
@@ -48,7 +51,6 @@ public class SolverService {
             return vm;
         }
 
-        
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < raw.moves.size(); i++) {
             if (i > 0) sb.append(" → ");
@@ -62,12 +64,10 @@ public class SolverService {
         return vm;
     }
 
-    
     public static Map loadMap(String filePath) throws IOException {
         return MapReader.readFromFile(filePath);
     }
 
-    
     public static void save(String outPath, SolverResultVM vm,
                             List<BoardStateFrame> frames,
                             String filePath) throws IOException {
@@ -75,8 +75,6 @@ public class SolverService {
         SolverResult raw = rebuildRaw(vm, frames);
         OutputWriter.saveToFile(outPath, raw, map, vm.algorithmName, vm.heuristicName);
     }
-
-    
 
     private List<BoardStateFrame> buildFrames(SolverResult raw, Map map) {
         List<BoardStateFrame> frames = new ArrayList<>();
@@ -87,10 +85,10 @@ public class SolverService {
 
         int prevX = map.startX, prevY = map.startY;
         for (int i = 0; i < raw.steps.size(); i++) {
-            int[] step   = raw.steps.get(i);
-            int newX     = step[0], newY = step[1];
-            int lastCp   = step[2], cost = step[3];
-            char dir     = (char) step[4];
+            int[] step  = raw.steps.get(i);
+            int newX    = step[0], newY = step[1];
+            int lastCp  = step[2], cost = step[3];
+            char dir    = (char) step[4];
             List<int[]> slide = interpolate(prevX, prevY, newX, newY);
             frames.add(new BoardStateFrame(i + 1, newX, newY,
                     String.valueOf(dir), cost, lastCp, slide, Collections.emptyList()));

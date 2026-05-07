@@ -50,7 +50,7 @@ public class HomeView {
         titleRow.getChildren().addAll(ice, solver);
 
         Label sub = lbl(
-            "UCS  \u00B7  GBFS  \u00B7  A*  ICE SLIDING PUZZLE VISUALIZER",
+            "UCS  \u00B7  GBFS  \u00B7  A*  \u00B7  BFS  ICE SLIDING PUZZLE VISUALIZER",
             "home-subtitle"
         );
 
