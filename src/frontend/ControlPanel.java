@@ -139,9 +139,7 @@ public class ControlPanel extends ScrollPane {
             {"GOAL",   "Goal"},
             {"ICE",    "Ice Block"},
             {"LAVA",   "Lava"},
-            {"#",      "Checkpoint"},
-            {"\uD83D\uDFE6", "Path (blue)"},
-            {"\uD83D\uDD35", "Visited"}
+            {"🔢", "Checkpoint"}
         }) {
             HBox row = new HBox(8);
             row.setAlignment(Pos.CENTER_LEFT);
