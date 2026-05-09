@@ -110,8 +110,9 @@
     -fx-background-color: -color-surface;
     -fx-border-color: -color-border;
     -fx-border-width: 0 1 0 0;
-    -fx-pref-width: 240px;
-    -fx-min-width: 220px;
+    -fx-pref-width: 250px;
+    -fx-min-width: 250px;
+    -fx-max-width: 250px;
     -fx-background: -color-surface;
 }
 .control-panel-scroll > .viewport {
@@ -224,6 +225,35 @@
 .board-wrapper {
     -fx-background-color: -color-bg;
 }
+.zoom-toolbar {
+    -fx-background-color: -color-surface;
+    -fx-border-color: -color-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 8 10 8 10;
+}
+.zoom-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-text2;
+}
+.zoom-btn {
+    -fx-padding: 4 10 4 10;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+.zoom-fit-btn {
+    -fx-padding: 4 11 4 11;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+.zoom-value {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-primary;
+    -fx-min-width: 48px;
+}
 .board-scroll {
     -fx-background-color: transparent;
     -fx-background: transparent;
@@ -309,7 +339,9 @@
     -fx-background-color: -color-surface;
     -fx-border-color: -color-border;
     -fx-border-width: 0 0 0 1;
-    -fx-pref-width: 230px;
+    -fx-pref-width: 260px;
+    -fx-min-width: 260px;
+    -fx-max-width: 260px;
     -fx-padding: 14px;
 }
 .result-section {
@@ -351,9 +383,9 @@
     -fx-background-color: -color-surface;
     -fx-border-color: -color-border;
     -fx-border-width: 1 0 0 0;
-    -fx-pref-height: 160px;
-    -fx-min-height: 130px;
-    -fx-max-height: 200px;
+    -fx-pref-height: 170px;
+    -fx-min-height: 170px;
+    -fx-max-height: 170px;
 }
 
 

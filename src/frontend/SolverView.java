@@ -19,6 +19,7 @@ public class SolverView {
     private BoardGridView boardGrid;
     private ResultPanel   resultPanel;
     private BottomPanel   bottomPanel;
+    private Label         zoomLabel;
     private SolverResultVM        currentResult;
     private List<BoardStateFrame> frames   = new ArrayList<>();
     private int                   curFrame = 0;
@@ -45,20 +46,27 @@ public class SolverView {
         controlPanel.setOnSave(this::saveSolution);
         controlPanel.setOnSaveLog(this::saveLog);
         root.setLeft(controlPanel);
+
         boardGrid = new BoardGridView();
         ScrollPane boardScroll = new ScrollPane(boardGrid);
         boardScroll.getStyleClass().add("board-scroll");
-        boardScroll.setFitToWidth(true);
+        boardScroll.setFitToWidth(false);
         boardScroll.setFitToHeight(false);  
         boardScroll.setPannable(true);
+        boardScroll.viewportBoundsProperty().addListener((obs, oldVal, newVal) ->
+            boardGrid.setViewportSize(newVal.getWidth() - 8, newVal.getHeight() - 8)
+        );
 
-        StackPane centerWrap = new StackPane(boardScroll);
+        HBox zoomBar = buildZoomBar();
+        VBox centerWrap = new VBox(8, zoomBar, boardScroll);
         centerWrap.getStyleClass().add("board-wrapper");
         centerWrap.setPadding(new Insets(12));
-        VBox.setVgrow(centerWrap, Priority.ALWAYS);
+        VBox.setVgrow(boardScroll, Priority.ALWAYS);
         root.setCenter(centerWrap);
+
         resultPanel = new ResultPanel();
         root.setRight(resultPanel);
+
         bottomPanel = new BottomPanel();
         bottomPanel.setOnFirst(() -> seek(0));
         bottomPanel.setOnPrev (() -> seek(curFrame - 1));
@@ -70,6 +78,48 @@ public class SolverView {
         root.setBottom(bottomPanel);
     }
 
+    private HBox buildZoomBar() {
+        HBox bar = new HBox(8);
+        bar.getStyleClass().add("zoom-toolbar");
+        bar.setAlignment(Pos.CENTER_LEFT);
+
+        Label title = new Label("Board Zoom");
+        title.getStyleClass().add("zoom-title");
+
+        Button zoomOut = new Button("-");
+        zoomOut.getStyleClass().addAll("btn-secondary", "zoom-btn");
+        zoomOut.setOnAction(e -> {
+            boardGrid.zoomOut();
+            updateZoomLabel();
+        });
+
+        Button zoomIn = new Button("+");
+        zoomIn.getStyleClass().addAll("btn-secondary", "zoom-btn");
+        zoomIn.setOnAction(e -> {
+            boardGrid.zoomIn();
+            updateZoomLabel();
+        });
+
+        Button fitBtn = new Button("Fit");
+        fitBtn.getStyleClass().addAll("btn-secondary", "zoom-fit-btn");
+        fitBtn.setOnAction(e -> {
+            boardGrid.resetZoom();
+            updateZoomLabel();
+        });
+
+        zoomLabel = new Label("100%");
+        zoomLabel.getStyleClass().add("zoom-value");
+
+        bar.getChildren().addAll(title, zoomOut, zoomIn, fitBtn, zoomLabel);
+        return bar;
+    }
+
+    private void updateZoomLabel() {
+        if (zoomLabel != null) {
+            zoomLabel.setText(boardGrid.getZoomPercent() + "%");
+        }
+    }
+
     private void loadFile(String path) {
         try {
             Map map = SolverService.loadMap(path);
@@ -79,7 +129,9 @@ public class SolverView {
             grid     = map.grid;
             startX   = map.startX;
             startY   = map.startY;
+            boardGrid.resetZoom();
             boardGrid.loadBoard(translate(grid, startX, startY, -1));
+            updateZoomLabel();
             clearState();
         } catch (IOException e) {
             alert("Error", e.getMessage());
@@ -246,7 +298,11 @@ public class SolverView {
     private void reset() {
         stopPlay();
         clearState();
-        if (grid != null) boardGrid.loadBoard(translate(grid, startX, startY, -1));
+        if (grid != null) {
+            boardGrid.resetZoom();
+            boardGrid.loadBoard(translate(grid, startX, startY, -1));
+            updateZoomLabel();
+        }
     }
 
     private void clearState() {

@@ -33,8 +33,9 @@ public class BottomPanel extends VBox {
 
     public BottomPanel() {
         getStyleClass().add("bottom-panel");
-        setPrefHeight(140);
-        setMinHeight(120);
+        setPrefHeight(170);
+        setMinHeight(170);
+        setMaxHeight(170);
 
         getChildren().addAll(buildTabBar(), buildPlayback(), buildLog());
         showTab(true); 

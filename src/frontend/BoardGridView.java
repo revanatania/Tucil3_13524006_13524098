@@ -14,8 +14,15 @@ public class BoardGridView extends StackPane {
     private int[][]    checkpointNums;
     private int        rows, cols;
     private double     tileSize = 56;
+    private double     zoomFactor = 1.0;
+    private double     viewportWidth = -1;
+    private double     viewportHeight = -1;
 
-    private static final double MIN_TILE = 24, MAX_TILE = 72;
+    private static final double MIN_TILE = 6;
+    private static final double MAX_TILE = 96;
+    private static final double GAP = 3;
+    private static final double FRAME_PADDING = 8;
+    private static final double ZOOM_STEP = 1.15;
 
     public BoardGridView() {
         getStyleClass().add("board-container");
@@ -37,6 +44,34 @@ public class BoardGridView extends StackPane {
         }
         recompute();
         render();
+    }
+
+    public void setViewportSize(double width, double height) {
+        viewportWidth = width;
+        viewportHeight = height;
+        recompute();
+    }
+
+    public void zoomIn() {
+        zoomFactor = Math.min(6.0, zoomFactor * ZOOM_STEP);
+        recompute();
+        render();
+    }
+
+    public void zoomOut() {
+        zoomFactor = Math.max(0.2, zoomFactor / ZOOM_STEP);
+        recompute();
+        render();
+    }
+
+    public void resetZoom() {
+        zoomFactor = 1.0;
+        recompute();
+        render();
+    }
+
+    public int getZoomPercent() {
+        return (int) Math.round(zoomFactor * 100.0);
     }
 
     public void applyOverlay(int playerRow, int playerCol,
@@ -67,12 +102,17 @@ public class BoardGridView extends StackPane {
 
     private void recompute() {
         if (rows == 0 || cols == 0) return;
-        double w = getWidth()  > 0 ? getWidth()  : getPrefWidth();
-        double h = getHeight() > 0 ? getHeight() : getPrefHeight();
-        if (w <= 0 || h <= 0) return;
-        double ts = Math.min((w - 8) / cols, (h - 8) / rows);
-        tileSize = Math.max(MIN_TILE, Math.min(ts, MAX_TILE));
+
+        double w = viewportWidth > 0 ? viewportWidth : (getWidth() > 0 ? getWidth() : getPrefWidth());
+        double h = viewportHeight > 0 ? viewportHeight : (getHeight() > 0 ? getHeight() : getPrefHeight());
+        double fitByWidth = w > 0 ? (w - FRAME_PADDING - (cols - 1) * GAP) / cols : 56;
+        double fitByHeight = h > 0 ? (h - FRAME_PADDING - (rows - 1) * GAP) / rows : 56;
+        double fitTile = Math.min(fitByWidth, fitByHeight);
+        if (!Double.isFinite(fitTile) || fitTile <= 0) fitTile = 56;
+
+        tileSize = clamp(fitTile * zoomFactor, MIN_TILE, MAX_TILE);
         if (grid != null) applySize();
+        setPrefSize(totalWidth(), totalHeight());
     }
 
     private void applySize() {
@@ -87,15 +127,13 @@ public class BoardGridView extends StackPane {
 
     private void render() {
         grid = new GridPane();
-        grid.setHgap(3); grid.setVgap(3);
+        grid.setHgap(GAP); grid.setVgap(GAP);
         grid.setAlignment(Pos.CENTER);
         for (int r = 0; r < rows; r++)
             for (int c = 0; c < cols; c++)
                 grid.add(buildTile(r, c), c, r);
         getChildren().setAll(grid);
-        double totalW = cols * (tileSize + 3) + 8;
-        double totalH = rows * (tileSize + 3) + 8;
-        setPrefSize(totalW, totalH);
+        setPrefSize(totalWidth(), totalHeight());
     }
 
     private StackPane buildTile(int r, int c) {
@@ -135,7 +173,8 @@ public class BoardGridView extends StackPane {
             }
             case PATH -> {
                 StackPane dot = new StackPane();
-                dot.setPrefSize(8, 8);
+                double dotSize = clamp(tileSize * 0.16, 4, 14);
+                dot.setPrefSize(dotSize, dotSize);
                 dot.getStyleClass().add("path-dot");
                 yield dot;
             }
@@ -161,5 +200,17 @@ public class BoardGridView extends StackPane {
 
     private boolean inBounds(int r, int c) {
         return r >= 0 && r < rows && c >= 0 && c < cols;
+    }
+
+    private double totalWidth() {
+        return cols * tileSize + (cols - 1) * GAP + FRAME_PADDING;
+    }
+
+    private double totalHeight() {
+        return rows * tileSize + (rows - 1) * GAP + FRAME_PADDING;
+    }
+
+    private double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
     }
 }

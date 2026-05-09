@@ -8,6 +8,6 @@ public class PlayerIcon {
         "assets/playerIcon.png",
     };
     public static Node make(double size) {
-        return IconUtil.makeIcon(PATHS, size, "\u26C4");
+        return IconUtil.makeIcon(PATHS, size, "\u26C4", false);
     }
 }

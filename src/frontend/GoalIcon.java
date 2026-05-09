@@ -7,6 +7,6 @@ public class GoalIcon {
         "assets/goal_icon.png",
     };
     public static Node make(double size) {
-        return IconUtil.makeIcon(PATHS, size, "\uD83C\uDFAF");
+        return IconUtil.makeIcon(PATHS, size, "\uD83C\uDFAF", false);
     }
 }

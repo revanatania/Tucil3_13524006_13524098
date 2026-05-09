@@ -10,7 +10,9 @@ public class ResultPanel extends VBox {
 
     public ResultPanel() {
         getStyleClass().add("result-panel");
-        setPrefWidth(230);
+        setPrefWidth(260);
+        setMinWidth(260);
+        setMaxWidth(260);
         setPadding(new Insets(14));
         setSpacing(0);
 

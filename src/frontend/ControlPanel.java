@@ -23,8 +23,9 @@ public class ControlPanel extends ScrollPane {
         setFitToWidth(true);
         setHbarPolicy(ScrollBarPolicy.NEVER);
         setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        setPrefWidth(240);
-        setMinWidth(220);
+        setPrefWidth(250);
+        setMinWidth(250);
+        setMaxWidth(250);
 
         VBox inner = new VBox(14);
         inner.getStyleClass().add("control-panel");

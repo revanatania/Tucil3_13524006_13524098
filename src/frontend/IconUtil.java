@@ -14,13 +14,17 @@ public class IconUtil {
 
     private static final HashMap<String, Image> CACHE = new HashMap<>();
     public static Node makeIcon(String[] paths, double size, String fallbackEmoji) {
-        String key = paths[0]; 
+        return makeIcon(paths, size, fallbackEmoji, true);
+    }
+
+    public static Node makeIcon(String[] paths, double size, String fallbackEmoji, boolean removeBlackBg) {
+        String key = paths[0] + "|rb=" + removeBlackBg;
         Image img = CACHE.get(key);
 
         if (img == null && !CACHE.containsKey(key)) {
             Image raw = loadImage(paths);
             if (raw != null && !raw.isError()) {
-                Image cleaned = removeBlackBackground(raw);
+                Image cleaned = removeBlackBg ? removeBlackBackground(raw) : raw;
                 Image trimmed = trimTransparentBounds(cleaned);
                 img = toSquareCanvas(trimmed);
             }
