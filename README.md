@@ -12,7 +12,7 @@ Program menyediakan:
 ## Requirement dan Instalasi
 Kebutuhan utama:
 - Java Development Kit (JDK) 17 atau lebih baru
-- Maven 3.8 atau lebih baru
+- Maven 3.8 atau lebih baru (hanya untuk build ulang dari source)
 
 Catatan penting:
 - `pom.xml` saat ini menggunakan `javafx.platform=win`, sehingga konfigurasi default ditujukan untuk Windows.
@@ -57,34 +57,39 @@ mvn package
 
 ## Cara Menjalankan dan Menggunakan Program
 
-### Menjalankan GUI (disarankan)
+## Cara Menjalankan Aplikasi
+1. Buka folder `bin/`.
+2. Jalankan `IcePathSolver.bat` (double click).
+3. Di aplikasi, buka menu Solver.
+4. Klik `Browse File` lalu pilih file map `.txt`.
+5. Pilih algoritma dan heuristik (jika diperlukan), lalu klik `Run Solver`
+
+### Menjalankan dengan maven
 ```bash
 mvn javafx:run
 ```
 
-Langkah penggunaan GUI:
+Langkah penggunaan: 
 1. Buka halaman Solver.
 2. Klik `Browse File` lalu pilih file map `.txt`.
-3. Pilih algoritma (UCS/GBFS/A*).
+3. Pilih algoritma (UCS/GBFS/A*/BFS).
 4. Pilih heuristik (untuk GBFS/A*).
 5. Klik `Run Solver`.
 6. Lihat hasil pada panel kanan, dan gunakan playback/log pada panel bawah.
 7. Jika solusi ditemukan, simpan hasil dengan `Save Solution` atau log dengan `Save Log`.
 
-### Menjalankan versi CLI (opsional)
-Setelah compile:
-
-```bash
-java -cp target/classes Main
-```
-
-Lalu ikuti instruksi interaktif di terminal (input path file, algoritma, heuristik, playback, simpan output).
 
 ### Menjalankan JAR hasil package
 Setelah `mvn package`:
 
 ```bash
 java -jar target/icepath-solver-1.0.0.jar
+```
+
+Untuk siap pakai, gunakan:
+
+```bash
+java -jar bin/IcePathSolver.jar
 ```
 
 ## Struktur Folder Utama
@@ -97,7 +102,7 @@ pom.xml       -> konfigurasi build Maven
 ```
 
 ## Author / Identitas Pembuat
-| Nama              | NIM                                      |
-|------------------|-------------------------------------------|
-| Gabriella Botimada Lubis   | 13524006   |
-| Reva Natania Sitohang  | 13524098   |
+| Nama | NIM |
+|---|---|
+| Gabriella Botimada Lubis | 13524006 |
+| Reva Natania Sitohang | 13524098 |
